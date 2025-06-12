@@ -21,10 +21,11 @@ app.get('/', async (req, res) => {
     const posts = response.data.data;
 
     if (posts && posts.length > 0) {
-      const latestPostId = posts[0].id;
-      const postUrl = `https://www.facebook.com/${latestPostId}`;
-      
-      // Redirección compatible con móviles (HTML + JS)
+      const latestPostId = posts[0].id; // Formato: PAGEID_POSTID
+      const postIdOnly = latestPostId.split('_')[1]; // Solo POSTID
+      const postUrl = `https://www.facebook.com/${PAGE_ID}/posts/${postIdOnly}`;
+
+      // Redirección con respaldo HTML + JS + meta-refresh
       return res.send(`
         <!DOCTYPE html>
         <html lang="es">
@@ -32,6 +33,7 @@ app.get('/', async (req, res) => {
           <meta charset="UTF-8">
           <title>Redireccionando...</title>
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <meta http-equiv="refresh" content="1; url=${postUrl}" />
         </head>
         <body style="text-align: center; font-family: Arial; padding-top: 50px;">
           <h2>Redireccionando a la última publicación de Facebook...</h2>
